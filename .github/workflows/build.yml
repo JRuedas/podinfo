@@ -34,3 +34,4 @@ jobs:
         push: true
         tags: ${{ env.IMAGE }}:${{ steps.version.outputs.revision }}
         labels: ${{ steps.meta.outputs.labels }}
+        
