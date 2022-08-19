@@ -35,4 +35,3 @@ jobs:
           ${{ env.IMAGE }}:${{ steps.version.outputs.new-tag }}
           ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
-
