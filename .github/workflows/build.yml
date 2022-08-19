@@ -34,3 +34,4 @@ jobs:
           ${{ env.IMAGE }}:${{ steps.version.outputs.revision }}
           ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
+        
