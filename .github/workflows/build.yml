@@ -11,15 +11,9 @@ jobs:
       IMAGE: ${{ secrets.DOCKER_USERNAME }}/podinfo
     runs-on: ubuntu-latest
     steps:
-    - name: Prepare
-      id: prep
-      run: |
-        VERSION=sha-${GITHUB_SHA::8}
-        if [[ $GITHUB_REF == refs/tags/* ]]; then
-          VERSION=${GITHUB_REF/refs\/tags\//}
-        fi
-        echo ::set-output name=BUILD_DATE::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-        echo ::set-output name=VERSION::${VERSION}
+    - name: Version  
+      id: version  
+      uses: juliansangillo/tag-version@v1.5
     - name: Setup QEMU
       id: qemu
       uses: docker/setup-qemu-action@v2
@@ -38,5 +32,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
+        tags: ${{ env.IMAGE }}:${{ steps.version.outputs.revision }}
         labels: ${{ steps.meta.outputs.labels }}
