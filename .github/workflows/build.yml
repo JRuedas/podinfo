@@ -14,6 +14,8 @@ jobs:
     - name: Version  
       id: version  
       uses: juliansangillo/tag-version@v1.5
+      with:  
+        production-branch: master  
     - name: Setup QEMU
       id: qemu
       uses: docker/setup-qemu-action@v2
