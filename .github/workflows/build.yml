@@ -25,7 +25,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: Version  
       id: version  
-      uses: juliansangillo/tag-version@v1.5    
+      uses: juliansangillo/tag-version@v1.5
+      with:  
+        production-branch: master
+        test-branch: master
+        dev-branch: master 
     - name: Build and push Docker image
       id: docker_build
       uses: docker/build-push-action@v3
