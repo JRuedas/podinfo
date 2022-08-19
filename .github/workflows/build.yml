@@ -36,5 +36,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ env.IMAGE }}:${{ steps.version.outputs.revision }}
+        tags: | 
+          ${{ env.IMAGE }}:${{ steps.version.outputs.revision }}
+          ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
