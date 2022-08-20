@@ -8,7 +8,7 @@ backends: []
 
 image:
   repository: jruedas92/podinfo
-  tag: 6.2.0
+  tag: 1.0.5
   pullPolicy: IfNotPresent
 
 ui:
