@@ -20,7 +20,18 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - uses: actions/checkout@v3
-#    - uses: fregante/setup-git-user@v1
+    - name: Restore Go cache
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: ${{ runner.os }}-go-
+    - name: Setup Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18.x
+    - name: Run unit tests
+      run: make test
     - uses: phish108/autotag-action@1.1.51
       id: version
       with:
