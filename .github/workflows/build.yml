@@ -59,12 +59,18 @@ jobs:
           ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
 
+    - name: Checkout configuration
+      uses: actions/checkout@v3
+      with:
+        repository: JRuedas/tfm-argocd-apps
+        path: ./tfm-argocd-apps
+        submodules: recursive
+
     - name: Update Helm chart version
       run: |
-          version=$(cat ./charts/podinfo/values.yaml | grep -m 1 tag: | awk '{print $2}')
-          sed -i "s/$version/${{ steps.version.outputs.new-tag }}/" ./charts/podinfo/values.yaml
-          sed -i "s/$version/${{ steps.version.outputs.new-tag }}/" ./charts/podinfo/values-prod.yaml
-          sed -i "s/$version/${{ steps.version.outputs.new-tag }}/" ./charts/podinfo/Chart.yaml
+          version=$(cat ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml | grep -m 1 appVersion: | awk '{print $2}')
+          sed -i "0,/tag: $version/{s/tag: $version/tag: ${{ steps.version.outputs.new-tag }}/}" ./tfm-argocd-apps/charts/jruedas-podinfo/values.yaml
+          sed -i "s/appVersion: $version/appVersion: ${{ steps.version.outputs.new-tag }}/" ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml
 
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v4
