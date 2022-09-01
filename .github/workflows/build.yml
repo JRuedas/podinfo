@@ -65,6 +65,7 @@ jobs:
         repository: JRuedas/tfm-argocd-apps
         path: ./tfm-argocd-apps
         submodules: recursive
+        token: ${{ secrets.GH_TOKEN}}
 
     - name: Update Helm chart version
       run: |
