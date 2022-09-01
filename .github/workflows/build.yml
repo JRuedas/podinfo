@@ -77,4 +77,4 @@ jobs:
       with:
         repository: ./tfm-argocd-apps
         commit_message: Version updated ${{ steps.version.outputs.new-tag }}
-        file_pattern: .charts/jruedas-podinfo/values.yaml ./charts/jruedas-podinfo/Chart.yaml
+        file_pattern: ./charts/jruedas-podinfo/values.yaml ./charts/jruedas-podinfo/Chart.yaml
