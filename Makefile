@@ -4,7 +4,3 @@
 
 test:
 	go test ./... -coverprofile cover.out
-
-build-charts:
-	helm lint charts/*
-	helm package charts/*
