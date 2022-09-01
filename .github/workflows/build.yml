@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - 'master'
+    paths-ignore:
+      - 'pkg/version/version.go'
 
 jobs:
   docker:
@@ -48,6 +50,11 @@ jobs:
       with:
         github-token: ${{ secrets.GH_TOKEN}}
 
+    - name: Update source code version
+      run: |
+          version=$(cat ./pkg/version/version.go | grep 'VERSION' pkg/version/version.go | awk '{ print $$4 }' | tr -d '"' | awk '{print $4}')
+          sed -i "s/$version/${{ steps.version.outputs.new-tag }}/" ./pkg/version/version.go
+
     - name: Build and push Docker image
       id: docker_build
       uses: docker/build-push-action@v3
@@ -59,7 +66,7 @@ jobs:
           ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
 
-    - name: Checkout configuration
+    - name: Checkout configuration repository
       uses: actions/checkout@v3
       with:
         repository: JRuedas/tfm-argocd-apps
@@ -67,7 +74,7 @@ jobs:
         submodules: recursive
         token: ${{ secrets.GH_TOKEN}}
 
-    - name: Update Helm chart version
+    - name: Update configuration repository version
       run: |
           version=$(cat ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml | grep -m 1 appVersion: | awk '{print $2}')
           sed -i "0,/tag: $version/{s/tag: $version/tag: ${{ steps.version.outputs.new-tag }}/}" ./tfm-argocd-apps/charts/jruedas-podinfo/values.yaml
