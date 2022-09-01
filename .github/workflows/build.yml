@@ -75,5 +75,6 @@ jobs:
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: Version updated
-        file_pattern: ./tfm-argocd-apps/charts/jruedas-podinfo/values.yaml ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml
+        repository: ./tfm-argocd-apps
+        commit_message: Version updated ${{ steps.version.outputs.new-tag }}
+        file_pattern: .charts/jruedas-podinfo/values.yaml ./charts/jruedas-podinfo/Chart.yaml
