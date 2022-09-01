@@ -76,4 +76,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Version updated
-        file_pattern: ./charts/podinfo/values*.yaml ./charts/podinfo/Chart.yaml
+        file_pattern: ./tfm-argocd-apps/charts/jruedas-podinfo/values.yaml ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml
