@@ -66,6 +66,12 @@ jobs:
           ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
 
+    - name: Commit new version and push changes to source code repository
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Version updated ${{ steps.version.outputs.new-tag }}
+        file_pattern: ./pkg/version/version.go
+
     - name: Checkout configuration repository
       uses: actions/checkout@v3
       with:
@@ -80,7 +86,7 @@ jobs:
           sed -i "0,/tag: $version/{s/tag: $version/tag: ${{ steps.version.outputs.new-tag }}/}" ./tfm-argocd-apps/charts/jruedas-podinfo/values.yaml
           sed -i "s/appVersion: $version/appVersion: ${{ steps.version.outputs.new-tag }}/" ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml
 
-    - name: Commit and push changes
+    - name: Commit new version and push changes to configuration repository
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         repository: ./tfm-argocd-apps
