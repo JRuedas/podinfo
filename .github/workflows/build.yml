@@ -8,7 +8,7 @@ on:
       - 'pkg/version/version.go'
 
 jobs:
-  docker:
+  podinfo:
     env:
       IMAGE: ${{ secrets.DOCKER_USERNAME }}/podinfo
     runs-on: ubuntu-latest
@@ -34,13 +34,13 @@ jobs:
     - name: Run unit tests
       run: make test
 
-    - name: Bump version
+    - name: Generate version
       id: version
       uses: phish108/autotag-action@1.1.51
       with:
         github-token: ${{ secrets.GH_TOKEN}}
 
-    - name: Update source code version
+    - name: Update app version
       run: |
           version=$(cat ./pkg/version/version.go | grep 'VERSION' pkg/version/version.go | awk '{ print $$4 }' | tr -d '"' | awk '{print $4}')
           sed -i "s/$version/${{ steps.version.outputs.new-tag }}/" ./pkg/version/version.go
@@ -51,7 +51,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
+    - name: Build & Push Docker image
       id: docker_build
       uses: docker/build-push-action@v3
       with:
@@ -62,13 +62,13 @@ jobs:
           ${{ env.IMAGE }}:latest
         labels: ${{ steps.meta.outputs.labels }}
 
-    - name: Commit new version and push changes to source code repository
+    - name: Release app new version
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Version updated ${{ steps.version.outputs.new-tag }}
         file_pattern: ./pkg/version/version.go
 
-    - name: Checkout configuration repository
+    - name: Checkout configuration
       uses: actions/checkout@v3
       with:
         repository: JRuedas/tfm-argocd-apps
@@ -76,13 +76,13 @@ jobs:
         submodules: recursive
         token: ${{ secrets.GH_TOKEN}}
 
-    - name: Update configuration repository version
+    - name: Update configuration version
       run: |
           version=$(cat ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml | grep -m 1 appVersion: | awk '{print $2}')
           sed -i "0,/tag: $version/{s/tag: $version/tag: ${{ steps.version.outputs.new-tag }}/}" ./tfm-argocd-apps/charts/jruedas-podinfo/values.yaml
           sed -i "s/appVersion: $version/appVersion: ${{ steps.version.outputs.new-tag }}/" ./tfm-argocd-apps/charts/jruedas-podinfo/Chart.yaml
 
-    - name: Commit new version and push changes to configuration repository
+    - name: Release configuration new version
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         repository: ./tfm-argocd-apps
